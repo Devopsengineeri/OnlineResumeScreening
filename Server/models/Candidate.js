@@ -12,3 +12,5 @@ const CandidateSchema = new mongoose.Schema({
   },
   timestamps: true,
 });
+
+module.exports = mongoose.Model("Candidate", CandidateSchema);

@@ -7,3 +7,4 @@ const InterviewSchema = new mongoose.Schema({
   status: { type: String, enum: ["scheduled", "completed", "cancelled"] },
   remarks: String,
 });
+module.exports = mongoose.Model("Interview", InterviewSchema);
