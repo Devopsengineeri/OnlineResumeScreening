@@ -8,3 +8,5 @@ const calculateMatchScore = (candidateSkills, requiredSkills) => {
     score: Math.round(score),
   };
 };
+
+export default matchedSkills;

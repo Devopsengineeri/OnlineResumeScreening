@@ -5,12 +5,12 @@ const CandidateSchema = new mongoose.Schema({
   phone: String,
   skills: [String],
   experience: String,
+  resumeUrl: String,
   status: {
     type: String,
     enum: ["Applied", "Shortlisted", "Interviewed", "Rejected", "Hired"],
     default: "Applied",
   },
-  timestamps: true,
 });
-
-module.exports = mongoose.Model("Candidate", CandidateSchema);
+const Candidate = mongoose.model("candidate", CandidateSchema);
+export default Candidate;
