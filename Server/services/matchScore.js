@@ -1,12 +1,17 @@
 const calculateMatchScore = (candidateSkills, requiredSkills) => {
-  const matchedSkills = candidateSkills.filter((skills) =>
-    requiredSkills.includes(skills.toLowerCase())
+  const matchedSkills = candidateSkills.filter((skill) =>
+    requiredSkills.map((s) => s.toLowerCase()).includes(skill.toLowerCase())
   );
-  const score = (matchedSkills.length / requiredSkills.length) * 100;
+
+  const score =
+    requiredSkills.length === 0
+      ? 0
+      : (matchedSkills.length / requiredSkills.length) * 100;
+
   return {
     matchedSkills,
     score: Math.round(score),
   };
 };
 
-export default matchedSkills;
+export default calculateMatchScore;

@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
+import { type } from "os";
 const CandidateSchema = new mongoose.Schema({
   name: String,
-  email: String,
+  email: { type: String, required: true },
   phone: String,
   skills: [String],
+  location: String,
+  education: String,
+  projects: String,
   experience: String,
   resumeUrl: String,
   status: {

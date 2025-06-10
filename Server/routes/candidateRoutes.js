@@ -10,7 +10,7 @@ import {
 
 import { authorize, protect } from "../middleware/authMiddleware.js";
 import upload from "../middleware/uploadMiddleware.js";
-// import { parseResumeMiddleware } from "../middleware/parserMiddleware.js";
+// import parseResumeMiddleware from "../middleware/parserMiddleware.js";
 
 // Upload + Add Candidate
 router.post(
