@@ -4,7 +4,7 @@ import cors from "cors";
 import database from "./database/connection.js";
 import authRoutes from "./routes/authRoutes.js";
 import candidateRoutes from "./routes/candidateRoutes.js";
-// import interviewRoutes from "./routes/interviewRoutes.js";
+import interviewRoutes from "./routes/interviewRoutes.js";
 const app = express();
 
 dotenv.config();
@@ -14,6 +14,7 @@ app.use(express.json());
 app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api/candidates", candidateRoutes);
+app.use("/api/interview", interviewRoutes);
 
 // app.use("/api/interviews", interviewRoutes);
 // Static folder for resume uploads (optional)

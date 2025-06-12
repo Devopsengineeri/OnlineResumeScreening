@@ -16,5 +16,5 @@ const CandidateSchema = new mongoose.Schema({
     default: "Applied",
   },
 });
-const Candidate = mongoose.model("candidate", CandidateSchema);
+const Candidate = mongoose.model("Candidate", CandidateSchema);
 export default Candidate;

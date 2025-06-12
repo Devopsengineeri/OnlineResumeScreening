@@ -1,20 +1,26 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const {
+import {
   scheduleInterview,
   updateInterviewStatus,
   getAllInterviews,
-} = require("../controllers/interviewController.js");
+  getOneInterview,
+} from "../controllers/interviewController.js";
 
-const { protect, authorize } = require("../middleware/authMiddleware.js");
+import { protect, authorize } from "../middleware/authMiddleware.js";
 
 // Schedule new interview
-router.post("/", protect, authorize("admin", "recruiter"), scheduleInterview);
+router.post(
+  "/",
+  protect,
+  authorize("admin", "recruiter", "hr"),
+  scheduleInterview
+);
 
 // Update status
 router.put("/:id", protect, authorize("admin"), updateInterviewStatus);
 
 // Get all interviews
 router.get("/", protect, authorize("admin", "recruiter"), getAllInterviews);
-
+router.get("/:id", protect, authorize("admin", "recruiter"), getOneInterview);
 export default router;
