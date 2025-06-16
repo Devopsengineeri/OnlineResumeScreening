@@ -31,23 +31,31 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials" }); // ✅ RETURN added
     }
-    const token = await jwt.sign(
-      { id: user._id, role: user.role },
+
+    const token = jwt.sign(
+      { id: user._id, role: user.role, email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: "1day" }
+      { expiresIn: "1d" }
     );
-    // console.log(token, "sdsjdk");
-    res.status(201).json({ message: "Login Successfull", token });
+
+    return res.status(201).json({
+      message: "Login successful",
+      token,
+      role: user.role, // ✅ Add role in response
+    });
   } catch (error) {
-    res.status(500).json({ message: error });
+    console.error("Login error:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
