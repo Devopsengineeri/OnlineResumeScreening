@@ -20,35 +20,71 @@ const extractPhone = (text) =>
   text.match(/(\+91[-\s]?|0)?[6-9]\d{9}/)?.[0] || "";
 
 // // Skills extracted directly from text (JD-based)
-// const extractSkills = (text) => {
-//   const words = text.split(/\s|,|\n/).map((w) => w.trim().toLowerCase());
-//   const uniqueWords = [...new Set(words)];
-//   return uniqueWords.filter((w) => w.length > 2); // basic cleanup
-// };
+const extractSkills = (text) => {
+  const rawWords = text
+    .toLowerCase()
+    .split(/[\s,.;:\-\n()\/\\]+/)
+    .map((w) => w.trim());
+
+  const stopWords = new Set([
+    "and",
+    "the",
+    "with",
+    "for",
+    "are",
+    "you",
+    "your",
+    "have",
+    "skills",
+    "experience",
+    "knowledge",
+    "strong",
+    "good",
+    "ability",
+    "work",
+    "team",
+    "must",
+    "will",
+    "should",
+    "etc",
+    "like",
+    "can",
+    "in",
+    "on",
+    "to",
+    "of",
+  ]);
+
+  const skillWords = rawWords.filter(
+    (word) => word.length > 2 && !stopWords.has(word)
+  );
+
+  return [...new Set(skillWords)];
+};
 
 // ✅ Skill match from known list
-const extractSkills = (text) => {
-  const knownSkills = [
-    "html",
-    "css",
-    "javascript",
-    "react",
-    "node.js",
-    "express",
-    "mongodb",
-    "redux",
-    "git",
-    "github",
-    "bootstrap",
-    "rest api",
-    "mysql",
-    "typescript",
-    ,
-    "DOCKER",
-    "NAGIOS",
-  ];
-  return knownSkills.filter((skill) => text.includes(skill.toLowerCase()));
-};
+// const extractSkills = (text) => {
+//   const knownSkills = [
+//     "html",
+//     "css",
+//     "javascript",
+//     "react",
+//     "node.js",
+//     "express",
+//     "mongodb",
+//     "redux",
+//     "git",
+//     "github",
+//     "bootstrap",
+//     "rest api",
+//     "mysql",
+//     "typescript",
+//     ,
+//     "DOCKER",
+//     "NAGIOS",
+//   ];
+//   return knownSkills.filter((skill) => text.includes(skill.toLowerCase()));
+// };
 
 // Experience check: if no match, treat as Intern
 const extractExperience = (text) => {

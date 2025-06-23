@@ -49,3 +49,37 @@ export const addCandidate = async (req, res) => {
     res.status(500).json({ message: "Error creating candidate" });
   }
 };
+
+//get all candidate
+export const getAllCandidates = async (req, res) => {
+  try {
+    const requiredSkills = [
+      /* HR ke JD skills yahaan define karo */
+    ];
+    const candidates = await Candidate.find();
+
+    const enrichedCandidates = candidates.map((candidate) => {
+      const { matchedSkills, score } = calculateMatchScore(
+        candidate.skills,
+        requiredSkills
+      );
+
+      return {
+        ...candidate.toObject(), // mongoose doc -> plain object
+        matchScore: {
+          skillsScore: score,
+          matchedSkills,
+        },
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Candidates with score",
+      data: enrichedCandidates,
+    });
+  } catch (error) {
+    console.error("GetAllCandidates Error:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

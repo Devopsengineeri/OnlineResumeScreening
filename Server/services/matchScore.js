@@ -1,12 +1,18 @@
-const calculateMatchScore = (candidateSkills, requiredSkills) => {
-  const matchedSkills = candidateSkills.filter((skill) =>
-    requiredSkills.map((s) => s.toLowerCase()).includes(skill.toLowerCase())
+const calculateMatchScore = (candidateSkills = [], requiredSkills = []) => {
+  const normalize = (arr) =>
+    arr.map((s) => s.trim().toLowerCase()).filter(Boolean);
+
+  const candidateSet = new Set(normalize(candidateSkills));
+  const requiredSet = new Set(normalize(requiredSkills));
+
+  const matchedSkills = [...requiredSet].filter((skill) =>
+    candidateSet.has(skill)
   );
 
   const score =
-    requiredSkills.length === 0
+    requiredSet.size === 0
       ? 0
-      : (matchedSkills.length / requiredSkills.length) * 100;
+      : (matchedSkills.length / requiredSet.size) * 100;
 
   return {
     matchedSkills,

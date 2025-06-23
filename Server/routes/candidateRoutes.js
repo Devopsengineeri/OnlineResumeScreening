@@ -3,7 +3,7 @@ const router = express.Router();
 
 import {
   addCandidate,
-  // getAllCandidates,
+  getAllCandidates,
   // getCandidateById,
   // updateCandidate,
 } from "../controllers/candidateController.js";
@@ -23,7 +23,12 @@ router.post(
 );
 
 // Get all candidates
-// router.get("/", protect, authorize("admin", "recruiter"), getAllCandidates);
+router.get(
+  "/",
+  protect,
+  authorize("admin", "recruiter", "hr"),
+  getAllCandidates
+);
 
 // Get single candidate
 // router.get("/:id", protect, authorize("admin", "recruiter"), getCandidateById);

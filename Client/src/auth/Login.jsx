@@ -13,10 +13,11 @@ const Login = () => {
         email,
         password,
       });
-      console.log(res.data, "login");
-      const { token, role } = res.data;
+      console.log(res.data, " 13314");
+      const { token, role, user } = res.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
+      localStorage.setItem("userId", user);
       navigate("/dashboard");
     } catch (error) {
       setError("Invalid email or password");
