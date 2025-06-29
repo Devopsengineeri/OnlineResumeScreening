@@ -1,8 +1,6 @@
 import Candidate from "../models/Candidate.js";
 import parsedResume from "../services/resumeParser.js";
 import calculateMatchScore from "../services/matchScore.js";
-import fs from "fs";
-import path from "path";
 
 export const addCandidate = async (req, res) => {
   try {
@@ -17,7 +15,6 @@ export const addCandidate = async (req, res) => {
     if (typeof requiredSkills === "string") {
       requiredSkills = JSON.parse(requiredSkills);
     }
-
     const parsedData = await parsedResume(filePath);
 
     // Matching score (UI only)
@@ -81,5 +78,49 @@ export const getAllCandidates = async (req, res) => {
   } catch (error) {
     console.error("GetAllCandidates Error:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// get Candidate status
+export const getCandidateStats = async (req, res) => {
+  try {
+    const total = await Candidate.countDocuments();
+    const shortlisted = await Candidate.countDocuments({
+      status: "shortlisted",
+    });
+    const interview = await Candidate.countDocuments({
+      interview: { $exists: true, $ne: null },
+    });
+    res.status(200).json({
+      total,
+      shortlisted,
+      interview,
+    });
+  } catch (error) {
+    console.error("Error fetching candidate stats:", error);
+    res.status(500).json({ message: "Failed to fetch candidate stats" });
+  }
+};
+
+//  Status all Status
+
+export const allGetStatus = async (req, res) => {
+  try {
+    const { status } = req.params;
+    if (!status) {
+      return res.status(400).json({ message: "Status parameter is missing" });
+    }
+
+    const filteredStatus = status.toLowerCase();
+    let candidates;
+    if (status === "all") {
+      candidates = await Candidate.find();
+    } else {
+      candidates = await Candidate.find({ status: filteredStatus });
+    }
+    res.status(200).json(candidates);
+  } catch (error) {
+    console.error("Error fetching candidates:", error);
+    res.status(500).json({ message: "Failed to fetch candidates" });
   }
 };

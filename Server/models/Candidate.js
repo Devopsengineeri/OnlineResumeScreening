@@ -10,6 +10,10 @@ const CandidateSchema = new mongoose.Schema({
   projects: String,
   experience: String,
   resumeUrl: String,
+  interview: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Interview",
+  },
   status: {
     type: String,
     enum: ["Applied", "Shortlisted", "Interviewed", "Rejected", "Hired"],

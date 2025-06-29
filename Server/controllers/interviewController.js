@@ -22,6 +22,11 @@ export const scheduleInterview = async (req, res) => {
 
     const interview = await Interview.create({ candidate, interviewer, date });
 
+    await Candidate.findByIdAndUpdate(candidate, {
+      interview: interview._id,
+      interviewStatus: "scheduled", // optional
+    });
+
     await sendEmail(
       candidateData.email,
       "Interview Scheduled",
@@ -35,7 +40,7 @@ export const scheduleInterview = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Interview scheduled and email sent!",
-      interview,
+      interview: interview._id,
     });
   } catch (error) {
     console.error("Email Error:", error);
@@ -46,16 +51,24 @@ export const scheduleInterview = async (req, res) => {
 // Update status
 export const updateInterviewStatus = async (req, res) => {
   try {
+    const interviewId = req.params.id;
+    const newStatus = req.body.status;
     const updatedInterview = await Interview.findByIdAndUpdate(
-      req.params.id,
-      { status: req.body.status },
+      interviewId,
+      { status: newStatus },
       { new: true }
     );
 
     if (!updatedInterview) {
       return res.status(404).json({ message: "Interview not found" });
     }
-
+    // Update Candidate status also
+    if (updatedInterview.candidate) {
+      await Candidate.findByIdAndUpdate(
+        updatedInterview.candidate,
+        { status: newStatus } // candidate status = interview status
+      );
+    }
     res.status(200).json(updatedInterview);
   } catch (error) {
     console.error("Update Error:", error);
@@ -64,22 +77,19 @@ export const updateInterviewStatus = async (req, res) => {
 };
 
 // Get all
-
 export const getAllInterviews = async (req, res) => {
   try {
     const interviews = await Interview.find()
-      .populate("candidate", "name email phone") // ✅ Only fetch selected fields
-      .populate("interviewer", "name email"); // ✅ Optional: role, etc.
+      .populate("candidate", "name email phone")
+      .populate("interviewer", "name email");
 
-    res.status(200).json(interviews); // ✅ 200 for success
+    res.status(200).json(interviews);
   } catch (error) {
     console.error("❌ Error while fetching interviews:", error);
     res.status(500).json({ message: "Failed to fetch interviews" });
   }
 };
-
 // get one interview
-
 export const getOneInterview = async (req, res) => {
   try {
     const oneInterviewFind = await Interview.findById(req.params.id)

@@ -18,7 +18,7 @@ router.post(
 );
 
 // Update status
-router.put("/:id", protect, authorize("admin"), updateInterviewStatus);
+router.patch("/:id", protect, authorize("admin", "hr"), updateInterviewStatus);
 
 // Get all interviews
 router.get("/", protect, authorize("admin", "recruiter"), getAllInterviews);

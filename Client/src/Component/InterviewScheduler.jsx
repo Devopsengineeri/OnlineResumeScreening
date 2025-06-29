@@ -4,7 +4,7 @@ import axios from "axios";
 const InterviewScheduler = ({ candidateId, interviewId, onSchedule }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [newStatus, setNewStatus] = useState("scheduled");
+  const [newStatus, setNewStatus] = useState("");
 
   const token = localStorage.getItem("token");
   const interviewerId = localStorage.getItem("userId");
@@ -31,9 +31,9 @@ const InterviewScheduler = ({ candidateId, interviewId, onSchedule }) => {
           },
         }
       );
-
+      // const interviewId = res.data.interview._id;
       alert("Interview scheduled!");
-      onSchedule?.(); // Refresh parent
+      // onSchedule?.(); // Refresh parent
     } catch (err) {
       console.error("Schedule Error:", err.response?.data || err.message);
       alert("Failed to schedule interview.");
@@ -45,20 +45,21 @@ const InterviewScheduler = ({ candidateId, interviewId, onSchedule }) => {
       alert("Interview ID missing!");
       return;
     }
-
+    // console.log(interviewId, "aaaaaaa");
     try {
       await axios.patch(
-        `http://localhost:4545/api/interview/${interviewId}/status`,
+        `http://localhost:4545/api/interview/${interviewId}`,
         {
           status: newStatus,
         },
         {
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
+      // console.log("Sending status:", newStatus);
       alert("Interview status updated!");
       onSchedule?.();
     } catch (error) {
@@ -112,7 +113,10 @@ const InterviewScheduler = ({ candidateId, interviewId, onSchedule }) => {
           >
             <option value="scheduled">Scheduled</option>
             <option value="completed">Completed</option>
+            <option value="rejected">Rejected</option>
+            <option value="shortlisted">Shortlisted</option>
             <option value="cancelled">Cancelled</option>
+            {/* ✅ Optional but useful */}
           </select>
           <button
             onClick={handleStatus}

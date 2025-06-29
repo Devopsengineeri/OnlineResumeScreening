@@ -4,8 +4,10 @@ const router = express.Router();
 import {
   addCandidate,
   getAllCandidates,
+  getCandidateStats,
   // getCandidateById,
   // updateCandidate,
+  allGetStatus,
 } from "../controllers/candidateController.js";
 
 import { authorize, protect } from "../middleware/authMiddleware.js";
@@ -29,11 +31,12 @@ router.get(
   authorize("admin", "recruiter", "hr"),
   getAllCandidates
 );
-
+// get candidte Status
+router.get("/status", protect, getCandidateStats);
 // Get single candidate
 // router.get("/:id", protect, authorize("admin", "recruiter"), getCandidateById);
 
 // Update candidate
 // router.put("/:id", protect, authorize("admin"), updateCandidate);
-
+router.get("/status/:status", allGetStatus);
 export default router;
