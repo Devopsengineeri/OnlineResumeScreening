@@ -9,12 +9,10 @@ const storage = multer.diskStorage({
     cb(null, `resume-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
-
 //filter file
-
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "application/pdf") cb(null, true);
-  else cb(new Error("Only PDFs allowed"), false);
+if (file.mimetype === "application/pdf") cb(null, true);
+else cb(new Error("Only PDFs allowed"), false);
 };
 const upload = multer({ storage, fileFilter });
 export default upload;

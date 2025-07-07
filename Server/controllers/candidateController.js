@@ -1,49 +1,73 @@
 import Candidate from "../models/Candidate.js";
-import parsedResume from "../services/resumeParser.js";
+import parseWithGroq from "../services/openaiParser.js";
 import calculateMatchScore from "../services/matchScore.js";
 
 export const addCandidate = async (req, res) => {
   try {
-    const filePath = req.file?.path;
-    let requiredSkills = req.body.requiredSkills || [];
+    const jdText = req.body.jdText || req.body;
+    const requiredSkillsRaw = req.body.requiredSkills;
+    const resumePath = req.file?.path;
 
-    if (!filePath) {
-      throw new Error("File path not found or file not uploaded.");
+    if (!jdText || !resumePath) {
+      throw new Error("❌ Missing JD text or resume file");
     }
 
-    // Convert string to array if sent as stringified JSON
-    if (typeof requiredSkills === "string") {
-      requiredSkills = JSON.parse(requiredSkills);
+    // 🔐 Safe requiredSkills parse
+    let requiredSkills = [];
+    try {
+      requiredSkills = Array.isArray(requiredSkillsRaw)
+        ? requiredSkillsRaw
+        : JSON.parse(requiredSkillsRaw || "[]");
+    } catch (err) {
+      console.error("❌ Error parsing requiredSkills:", err.message);
+      requiredSkills = [];
     }
-    const parsedData = await parsedResume(filePath);
 
-    // Matching score (UI only)
-    const { matchedSkills, score } = calculateMatchScore(
-      parsedData.skills,
-      requiredSkills
+    // ✅ Parse Resume + JD with Groq
+    const parsedData = await parseWithGroq(resumePath, jdText);
+
+    // 🔄 Normalize function
+    const normalize = (skill) =>
+      skill
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, " ") // emojis, symbols hata do
+        .replace(/\s+/g, " ")
+        .trim();
+
+    const resumeSkills = (parsedData.skills || []).map(normalize);
+    const normalizedRequiredSkills = requiredSkills.map(normalize);
+    console.log(normalizedRequiredSkills.filter((skill) => console.log(skill)));
+    const matchedSkills = normalizedRequiredSkills.filter((skill) =>
+      resumeSkills.includes(skill)
     );
 
-    const candidate = await Candidate.create({
-      name: parsedData.name,
-      email: parsedData.email,
-      phone: parsedData.phone,
-      skills: parsedData.skills,
-      experience: parsedData.experience,
-      resumeUrl: filePath.replace(/\\/g, "/"), // normalize path
+    const skillsScore =
+      normalizedRequiredSkills.length > 0
+        ? Math.round(
+            (matchedSkills.length / normalizedRequiredSkills.length) * 100
+          )
+        : 0;
+    // ✅ Save Candidate
+    const candidate = new Candidate({
+      ...parsedData,
+      resumeUrl: resumePath,
+      matchScore: {
+        matchingScore: parsedData.matchingScore || 0,
+        matchedSkills,
+        skillsScore,
+      },
     });
+
+    await candidate.save();
 
     res.status(201).json({
       success: true,
       message: "Candidate added successfully!",
       data: candidate,
-      matchScore: {
-        skillsScore: score,
-        matchedSkills,
-      },
     });
   } catch (error) {
-    console.error("Add Candidate Error:", error.message);
-    res.status(500).json({ message: "Error creating candidate" });
+    console.error("❌ Add Candidate Error:", error.message);
+    res.status(500).json({ message: "Failed to add candidate" });
   }
 };
 

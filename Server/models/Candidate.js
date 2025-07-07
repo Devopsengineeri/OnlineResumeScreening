@@ -10,6 +10,12 @@ const CandidateSchema = new mongoose.Schema({
   projects: String,
   experience: String,
   resumeUrl: String,
+  matchScore: {
+    matchingScore: { type: Number, default: 0 }, // 🟢 Groq se
+    matchedSkills: { type: [String], default: [] }, // 🟢 Manual matching
+    skillsScore: { type: Number, default: 0 }, // 🟢 Manual matching
+  },
+
   interview: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Interview",
