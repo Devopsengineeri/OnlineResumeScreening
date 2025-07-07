@@ -54,7 +54,6 @@ const Dashboard = () => {
 
     fetchFilteredCandidates();
   }, [statusFilter]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 p-6">
       <Navbar />

@@ -94,7 +94,6 @@ const ResumeUploadForm = () => {
             {matchScore.matchedSkills.join(", ")}
           </p>
           <p className="mt-1 font-medium text-sm">
-            Score:{" "}
             <span
               className={`px-2 py-1 rounded-full text-white ${
                 matchScore.skillsScore >= 80

@@ -2,7 +2,7 @@ import React from "react";
 
 const ResumeViewerModal = ({ resumeUrl, onClose }) => {
   if (!resumeUrl) return null;
-
+  // console.log(resumeUrl, "resume");
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-hidden relative">
@@ -23,8 +23,8 @@ const ResumeViewerModal = ({ resumeUrl, onClose }) => {
           src={`http://localhost:4545/${resumeUrl}`}
           allowFullScreen
           title="Resume"
-          width="100%"
-          height="600px"
+          width="400%"
+          height="900px"
           className="border-none"
         ></iframe>
       </div>

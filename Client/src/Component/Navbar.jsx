@@ -10,7 +10,7 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <div className="bg-white shadow-md px-6 rounded-2xl py-4 flex justify-between items-center">
       {/* Tabs Section */}
       <div className="flex space-x-8 items-center">
         {tabs.map((tab) => (

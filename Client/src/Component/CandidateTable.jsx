@@ -1,12 +1,10 @@
 import { useState } from "react";
-import ResumeViewerModal from "../Component/CandidateDetailsModal";
+import ResumeViewerModal from "../Component/ResumeViewerModal ";
 import InterviewScheduler from "./InterviewScheduler";
 import CandidateDetailsModal from "./CandidateDetailsModal";
-
 const CandidateTable = ({ candidates, onStatusChange }) => {
   const [selectedResume, setSelectedResume] = useState(null);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
-
   return (
     <>
       <div className="overflow-x-auto bg-white rounded shadow p-6">
@@ -78,6 +76,7 @@ const CandidateTable = ({ candidates, onStatusChange }) => {
                     <td className="px-4 py-3 text-center">
                       <button
                         onClick={(e) => {
+                          // console.log("Resume URL:", candidate.resumeUrl);
                           e.stopPropagation();
                           setSelectedResume(candidate.resumeUrl);
                         }}
@@ -117,10 +116,12 @@ const CandidateTable = ({ candidates, onStatusChange }) => {
       </div>
 
       {/* 📄 Resume Viewer Modal */}
-      <ResumeViewerModal
-        resumeUrl={selectedResume}
-        onClose={() => setSelectedResume(null)}
-      />
+      {selectedResume && (
+        <ResumeViewerModal
+          resumeUrl={selectedResume}
+          onClose={() => setSelectedResume(null)}
+        />
+      )}
 
       {/* 📋 Candidate Details Modal */}
       <CandidateDetailsModal
