@@ -7,22 +7,19 @@ const ResumeUploadForm = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [matchScore, setMatchScore] = useState(null);
-
+  console.log(matchScore, "matchScore");
   const handleResumeChange = (e) => {
     setResume(e.target.files[0]);
   };
-
   const handleSkillsChange = (e) => {
     setRequiredSkills(e.target.value); // comma-separated string
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!resume || !requiredSkills) {
       setError("Resume and Required Skills are required.");
       return;
     }
-
     const formData = new FormData();
     formData.append("resume", resume);
 
@@ -91,6 +88,7 @@ const ResumeUploadForm = () => {
         <div className="mt-4">
           <h4 className="font-semibold text-sm">Matched Skills:</h4>
           <p className="text-gray-800 text-sm">
+            {console.log(matchScore, "matchScore")}
             {matchScore.matchedSkills.join(", ")}
           </p>
           <p className="mt-1 font-medium text-sm">

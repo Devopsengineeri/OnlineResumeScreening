@@ -5,6 +5,7 @@ import {
   addCandidate,
   getAllCandidates,
   getCandidateStats,
+  getCandidatesByStatus,
   // getCandidateById,
   // updateCandidate,
   allGetStatus,
@@ -33,6 +34,8 @@ router.get(
 );
 // get candidte Status
 router.get("/status", protect, getCandidateStats);
+router.get("/status/:status", protect, getCandidatesByStatus);
+
 // Get single candidate
 // router.get("/:id", protect, authorize("admin", "recruiter"), getCandidateById);
 

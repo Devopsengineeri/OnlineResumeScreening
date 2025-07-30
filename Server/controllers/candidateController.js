@@ -36,7 +36,10 @@ export const addCandidate = async (req, res) => {
 
     const resumeSkills = (parsedData.skills || []).map(normalize);
     const normalizedRequiredSkills = requiredSkills.map(normalize);
-    console.log(normalizedRequiredSkills.filter((skill) => console.log(skill)));
+    // console.log(
+    //   normalizedRequiredSkills.filter((skill) => console.log(skill)),
+    //   "normalizedRequiredSkillsfilterSkills"
+    // );
     const matchedSkills = normalizedRequiredSkills.filter((skill) =>
       resumeSkills.includes(skill)
     );
@@ -49,12 +52,17 @@ export const addCandidate = async (req, res) => {
         : 0;
     // ✅ Save Candidate
     const candidate = new Candidate({
-      ...parsedData,
+      name: parsedData.name,
+      email: parsedData.email,
+      phone: parsedData.phone,
+      experience: parsedData.experience,
+      skills: parsedData.skills,
       resumeUrl: resumePath,
+      status: resumePath.status,
       matchScore: {
-        matchingScore: parsedData.matchingScore || 0,
-        matchedSkills,
+        matchingScore: skillsScore,
         skillsScore,
+        matchedSkills,
       },
     });
 
@@ -74,34 +82,12 @@ export const addCandidate = async (req, res) => {
 //get all candidate
 export const getAllCandidates = async (req, res) => {
   try {
-    const requiredSkills = [
-      /* HR ke JD skills yahaan define karo */
-    ];
-    const candidates = await Candidate.find();
+    const candidates = await Candidate.find().populate("jobId");
 
-    const enrichedCandidates = candidates.map((candidate) => {
-      const { matchedSkills, score } = calculateMatchScore(
-        candidate.skills,
-        requiredSkills
-      );
-
-      return {
-        ...candidate.toObject(), // mongoose doc -> plain object
-        matchScore: {
-          skillsScore: score,
-          matchedSkills,
-        },
-      };
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Candidates with score",
-      data: enrichedCandidates,
-    });
+    res.status(200).json(candidates);
   } catch (error) {
     console.error("GetAllCandidates Error:", error.message);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
@@ -110,11 +96,12 @@ export const getCandidateStats = async (req, res) => {
   try {
     const total = await Candidate.countDocuments();
     const shortlisted = await Candidate.countDocuments({
-      status: "shortlisted",
+      status: { $regex: /^shortlisted$/i },
     });
     const interview = await Candidate.countDocuments({
       interview: { $exists: true, $ne: null },
     });
+
     res.status(200).json({
       total,
       shortlisted,
@@ -127,7 +114,6 @@ export const getCandidateStats = async (req, res) => {
 };
 
 //  Status all Status
-
 export const allGetStatus = async (req, res) => {
   try {
     const { status } = req.params;
@@ -145,6 +131,23 @@ export const allGetStatus = async (req, res) => {
     res.status(200).json(candidates);
   } catch (error) {
     console.error("Error fetching candidates:", error);
+    res.status(500).json({ message: "Failed to fetch candidates" });
+  }
+};
+// Get candidates by status
+export const getCandidatesByStatus = async (req, res) => {
+  try {
+    const { status } = req.params;
+    let queary = {};
+    if (status === "interview") {
+      queary = { interview: { $exists: true, $ne: null } };
+    } else {
+      queary = { status: new RegExp(`^${status}$`, "i") };
+    }
+    const candidates = await Candidate.find(queary);
+    res.status(200).json(candidates);
+  } catch (error) {
+    console.error("Error fetching candidates by status:", error);
     res.status(500).json({ message: "Failed to fetch candidates" });
   }
 };

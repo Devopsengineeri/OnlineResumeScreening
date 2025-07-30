@@ -27,15 +27,15 @@ export const scheduleInterview = async (req, res) => {
       interviewStatus: "scheduled", // optional
     });
 
-    await sendEmail(
-      candidateData.email,
-      "Interview Scheduled",
-      `<h3>Hello ${candidateData.name},</h3>
-       <p>Your interview is scheduled on <strong>${new Date(
-         date
-       ).toLocaleString()}</strong>.</p>
-       <p>Best of luck!<br/>HR Team</p>`
-    );
+    // await sendEmail(
+    //   candidateData.email,
+    //   "Interview Scheduled",
+    //   `<h3>Hello ${candidateData.name},</h3>
+    //    <p>Your interview is scheduled on <strong>${new Date(
+    //      date
+    //    ).toLocaleString()}</strong>.</p>
+    //    <p>Best of luck!<br/>HR Team</p>`
+    // );
 
     res.status(201).json({
       success: true,
@@ -44,10 +44,12 @@ export const scheduleInterview = async (req, res) => {
     });
   } catch (error) {
     console.error("Email Error:", error);
-    res.status(500).json({ message: "Interview scheduling failed" });
+    console.error(
+      "❌ Failed to schedule interview:",
+      error.response?.data || error.message
+    );
   }
 };
-
 // Update status
 export const updateInterviewStatus = async (req, res) => {
   try {
@@ -75,7 +77,6 @@ export const updateInterviewStatus = async (req, res) => {
     res.status(500).json({ message: "Failed to update status" });
   }
 };
-
 // Get all
 export const getAllInterviews = async (req, res) => {
   try {

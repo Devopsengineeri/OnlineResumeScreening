@@ -1,37 +1,35 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Navbar from "../Component/Navbar";
-
 const Dashboard = () => {
   const [stats, setStats] = useState({
     total: 0,
     shortlisted: 0,
     interview: 0,
   });
-
   const [statusFilter, setStatusFilter] = useState("shortlisted");
   const [candidates, setCandidates] = useState([]);
-
   // Fetch Overall Stats (total/shortlisted/interview)
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:4545/api/candidates/status",
+          `http://localhost:4545/api/candidates/status/`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
+
         setStats(res.data);
       } catch (err) {
         console.error("Error fetching stats:", err);
       }
     };
+    console.log("RenderCheck kab chalta hai");
     fetchStats();
   }, []);
-
   // Fetch Candidates based on selected status
   useEffect(() => {
     const fetchFilteredCandidates = async () => {
@@ -46,6 +44,7 @@ const Dashboard = () => {
             },
           }
         );
+        console.log(res.data, "fetch Candidate Status");
         setCandidates(res.data);
       } catch (err) {
         console.error("Fetch error:", err);
@@ -67,7 +66,7 @@ const Dashboard = () => {
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-green-500 hover:shadow-xl transition">
           <h2 className="text-gray-600 text-lg">Shortlisted</h2>
-          <p className="text-3xl font-semibold text-green-600">
+          <p className="text-3xl font-semibold text -green-600">
             {stats.shortlisted}
           </p>
         </div>
@@ -81,7 +80,7 @@ const Dashboard = () => {
 
       {/* Filter Tabs */}
       <div className="flex space-x-4 mb-8">
-        {["shortlisted", "rejected", "interview", "new"].map((status) => (
+        {["shortlisted", "rejected", "interview", "applied"].map((status) => (
           <button
             key={status}
             onClick={() => setStatusFilter(status)}

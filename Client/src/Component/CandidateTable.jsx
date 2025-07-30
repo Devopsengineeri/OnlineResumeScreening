@@ -58,14 +58,14 @@ const CandidateTable = ({ candidates, onStatusChange }) => {
                       {candidate.matchScore ? (
                         <span
                           className={`px-2 py-1 rounded-full text-white text-center font-semibold ${
-                            candidate.matchScore.skillsScore >= 80
+                            candidate.matchScore.matchingScore >= 80
                               ? "bg-green-600"
-                              : candidate.matchScore.skillsScore >= 50
+                              : candidate.matchScore.matchingScore >= 50
                               ? "bg-yellow-500"
                               : "bg-red-500"
                           }`}
                         >
-                          {candidate.matchScore.skillsScore}%
+                          {candidate.matchScore.matchingScore}%
                         </span>
                       ) : (
                         <span className="text-gray-400 text-xs">N/A</span>

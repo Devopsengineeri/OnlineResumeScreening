@@ -25,6 +25,10 @@ const CandidateSchema = new mongoose.Schema({
     enum: ["Applied", "Shortlisted", "Interviewed", "Rejected", "Hired"],
     default: "Applied",
   },
+  jobId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Job", // 👈 Make sure 'Job' model exists
+  },
 });
 const Candidate = mongoose.model("Candidate", CandidateSchema);
 export default Candidate;

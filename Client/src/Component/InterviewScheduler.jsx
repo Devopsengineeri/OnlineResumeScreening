@@ -18,7 +18,7 @@ const InterviewScheduler = ({ candidateId, interviewId, onSchedule }) => {
     const datetime = `${date}T${time}`;
 
     try {
-      await axios.post(
+      const res = await axios.post(
         "http://localhost:4545/api/interview",
         {
           candidate: candidateId,
@@ -31,6 +31,8 @@ const InterviewScheduler = ({ candidateId, interviewId, onSchedule }) => {
           },
         }
       );
+
+      console.log(res, "res");
       // const interviewId = res.data.interview._id;
       alert("Interview scheduled!");
       // onSchedule?.(); // Refresh parent

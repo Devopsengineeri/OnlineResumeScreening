@@ -5,8 +5,10 @@ const Navbar = () => {
   const [active, setActive] = useState("upload");
 
   const tabs = [
+     { name: "DashBoard", path: "/dashboard" },
     { name: "Upload", path: "/uploadresume" },
     { name: "Candidates", path: "/candidates" },
+
   ];
 
   return (

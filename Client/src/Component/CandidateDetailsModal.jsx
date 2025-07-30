@@ -3,6 +3,9 @@ import React from "react";
 const CandidateDetailsModal = ({ candidate, onClose }) => {
   if (!candidate) return null;
 
+  const match = candidate.matchScore || {};
+  console.log(match.matchedSkills, "match");
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
       <div className="bg-white w-full max-w-xl p-6 rounded-lg shadow-xl relative">
@@ -34,15 +37,21 @@ const CandidateDetailsModal = ({ candidate, onClose }) => {
             <strong>Skills:</strong> {candidate.skills?.join(", ") || "N/A"}
           </p>
 
-          {candidate.matchScore && (
+          {/* ✅ Match Score Section */}
+          {match && (
             <>
               <p>
-                <strong>Match Score:</strong> {candidate.matchScore.skillsScore}
-                %
+                <strong>Total Match Score:</strong>
+                {match.matchingScore ?? "N/A"}%
               </p>
               <p>
-                <strong>Experience Score:</strong>{" "}
-                {candidate.matchScore.experienceScore || 0}%
+                <strong>Skills Score:</strong> {match.skillsScore ?? "N/A"}%
+              </p>
+              <p>
+                <strong>Matched Skills:</strong>
+                {match.matchedSkills?.length > 0
+                  ? match.matchedSkills.join(", ")
+                  : "None"}
               </p>
             </>
           )}
